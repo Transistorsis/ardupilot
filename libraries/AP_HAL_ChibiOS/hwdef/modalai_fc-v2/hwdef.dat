@@ -1,0 +1,50 @@
+# hw definition file for processing by chibios_hwdef.py
+# for Modal AI FC v2
+
+# MCU class and specific type. It is a STM32H753
+MCU STM32H7xx STM32H753xx
+
+
+# crystal frequency
+OSCILLATOR_HZ 16000000
+
+# board ID for firmware load
+APJ_BOARD_ID 41775
+
+# default to all pins low to avoid ESD issues
+DEFAULTGPIO OUTPUT LOW PULLDOWN
+
+FLASH_RESERVE_START_KB 32
+
+# flash size
+FLASH_SIZE_KB 2048
+
+env OPTIMIZE -O2
+
+# order of UARTs (and USB)
+SERIAL_ORDER OTG1 UART7 UART5 USART1 UART4 USART2 USART6 USART3 OTG2
+
+# now we define the pins that USB is connected on (checked against pin diagram)
+PA11 OTG_FS_DM OTG1
+PA12 OTG_FS_DP OTG1
+PA9 VBUS INPUT
+
+# these are the pins for SWD debugging with a STlinkv2 or black-magic probe (checked against pin diagram)
+PA13 JTMS-SWDIO SWD
+PA14 JTCK-SWCLK SWD
+
+# SPI1 - ICM20602
+PA5 SPI1_SCK SPI1
+PB4 SPI1_MISO SPI1
+PB5 SPI1_MOSI SPI1
+
+# SPI2 - ICM42688
+PI1 SPI2_SCK SPI2
+PI2 SPI2_MISO SPI2
+PI3 SPI2_MOSI SPI2
+
+# SPI5 - FRAM (checked against pin diagram)
+PF7 SPI5_SCK SPI5
+PF8 SPI5_MISO SPI5
+PF11 SPI5_MOSI SPI5
+
