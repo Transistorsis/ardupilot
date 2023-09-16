@@ -56,8 +56,8 @@ PF11 SPI5_MOSI SPI5
 # sensor CS
 PI9  ICM20602_CS CS
 PH5  ICM42688_CS CS
-PA15 BMI088_G_CS CS
-PI10 BMI088_A_CS CS
+PA15 BMI088_G_CS CS # imu2 cs
+PI10 BMI088_A_CS CS # I can't find this on the pinout diagram...
 PG7  FRAM_CS CS SPEED_VERYLOW
 
 # fsync pins

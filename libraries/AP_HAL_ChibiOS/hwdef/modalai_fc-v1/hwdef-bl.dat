@@ -59,6 +59,7 @@ PE9 UART7_RTS UART7
 PE10 UART7_CTS UART7
 
 # Add CS pins to ensure they are high in bootloader
+# these pins seem really random, and I'm not sure why they are here...
 PF3  ICM20602_CS CS SPEED_VERYLOW
 PF4  BMI088_G_CS CS
 PG10 BMI088_A_CS CS
