@@ -1,15 +1,15 @@
 # hw definition file for processing by chibios_hwdef.py
 # for Modal AI FC v2
 
-# MCU class and specific type. It is a STM32H753
-MCU STM32H7xx STM32H753xx
+# MCU class and specific type. It is an STM32H753
+MCU STM32H7xx STM32H743xx # chibios quirk
 
 
 # crystal frequency
 OSCILLATOR_HZ 16000000
 
 # board ID for firmware load
-APJ_BOARD_ID 41775
+APJ_BOARD_ID 50000 # I made this up...
 
 # default to all pins low to avoid ESD issues
 DEFAULTGPIO OUTPUT LOW PULLDOWN
@@ -35,7 +35,7 @@ PA14 JTCK-SWCLK SWD
 
 # SPI1 - ICM42688 (checked against pin diagram)
 PA5 SPI1_SCK SPI1
-PB4 SPI1_MISO SPI1
+PG9 SPI1_MISO SPI1
 PB5 SPI1_MOSI SPI1
 
 # SPI2 - ICM42688
@@ -45,19 +45,220 @@ PI3 SPI2_MOSI SPI2
 
 # SPI5 - FRAM (checked against pin diagram)
 PF7 SPI5_SCK SPI5
-PF8 SPI5_MISO SPI5
-PF11 SPI5_MOSI SPI5
+PH7 SPI5_MISO SPI5
+PF9  SPI5_MOSI SPI5
 
-# SPI6 - BMI088 6DoF, disabled due to lack of DMA channels (does this need to be disabled? The new processor might have more DMA...)
-#PB3 SPI6_SCK SPI6
-#PA6 SPI6_MISO SPI6
-#PG14 SPI6_MOSI SPI6
+# SPI6 - aviator expansion
+PB3 SPI6_SCK SPI6
+PA6 SPI6_MISO SPI6
+PG14 SPI6_MOSI SPI6
+
 
 # sensor CS
 PI9  ICM42688_A_CS CS # good?
 PH5  ICM42688_B_CS CS # good?
-PA15 BMI088_G_CS CS
-PI10 BMI088_A_CS CS
+PI10 AVIAATOR_CS CS # aviator expansion?
 PG7  FRAM_CS CS SPEED_VERYLOW # good
 
 
+# fsync pins
+PE9 IMU_1_FSYNC INPUT FLOATING
+#PE9 IMU_2_FSYNC INPUT FLOATING # can I have the same pin for both? (nope)
+
+# interrupt pins (checked against pin diagram)
+PF2 IMU_1_DRDY INPUT PULLDOWN 
+PA10 IMU_2_DRDY INPUT PULLDOWN
+PG5 BARO_INT INPUT PULLDOWN
+# no spare inturrupt
+
+
+
+# LSE crystal, unused
+PC14 LSE1 INPUT FLOATING
+PC15 LSE2 INPUT FLOATING
+
+# HWID pins, unused
+PA4 HWID_DAC1 INPUT FLOATING
+#PF4 HW_VER_SENS INPUT FLOATING (I don't know where this pin is...)
+#PF5 HW_REV_SENS INPUT FLOATING (same with this one)
+PG0 HWID_DAC1 INPUT FLOATING
+
+# no security module on this one
+
+
+
+# I2C buses
+
+# I2C1, EXT_GPS_I2C
+PB8 I2C1_SCL I2C1
+PB9 I2C1_SDA I2C1
+
+# I2C2 on aviator expansion
+PF1 I2C2_SCL I2C2
+PF0 I2C2_SDA I2C2
+
+# I2C3 not connected?
+# PH7 I2C3_SCL I2C3
+# PH8 I2C3_SDA I2C3
+
+# I2C4, BMP388 BARO (0x76h) AND ICP-20100 BARO (0x63h) AND BMM150 MAGNETOMETER
+PF14 I2C4_SCL I2C4
+PF15 I2C4_SDA I2C4
+
+# order of I2C buses (no I2C3)
+I2C_ORDER I2C4 I2C1 I2C2
+
+define HAL_I2C_INTERNAL_MASK 1 # ???
+
+# GPIOs
+#PE3 EXC_GPIO_25 INPUT FLOATING GPIO(110)
+# PE4 EXC_GPIO_26 INPUT FLOATING GPIO(111)
+
+# allow to have have a dedicated safety switch pin
+# on PE4 (I don't know where this is on either diagram)
+#PE4 SAFETY_IN INPUT PULLDOWN
+define HAL_HAVE_SAFETY_SWITCH 0
+define BOARD_SAFETY_ENABLE_DEFAULT 0
+
+# start peripheral power off, then enable after init
+# this prevents a problem with radios that use RTS for
+# bootloader hold
+#PF12 nVDD_5V_HIPOWER_EN OUTPUT HIGH
+#PG4  nVDD_5V_PERIPH_EN OUTPUT HIGH
+
+#PG5  VDD_5V_RC_EN OUTPUT HIGH
+#PG6  VDD_5V_WIFI_EN OUTPUT HIGH
+PC13  VDD_3V3_SD_CARD_EN OUTPUT HIGH # should this be PG11?
+
+# UARTs
+
+# USART1 is EXT_GPS (checked against pin diagram)
+PB7 USART1_RX USART1 NODMA
+PB6 USART1_TX USART1
+
+# USART2 not connected
+# PA3 USART2_RX USART2 NODMA
+# PD5 USART2_TX USART2
+# PD3 USART2_CTS USART2
+# PD4 USART2_RTS USART2
+
+# USART3, UART_2W_DEBUG (checked against pin diagram)
+PD9 USART3_RX USART3 NODMA
+PD8 USART3_TX USART3
+
+# UART4 (not connected)
+# PH14 UART4_RX UART4 NODMA
+# PH13 UART4_TX UART4
+
+# UART5 Telem 2, MSS_UART_4W (need to check still)
+PD2 UART5_RX UART5
+C12 UART5_TX UART5
+PC8 UART5_RTS UART5
+PC9 UART5_CTS UART5
+
+# USART6, spektrum
+PC7 USART6_RX USART6 NODMA GPIO(74)
+PC6 USART6_TX USART6
+
+# RC input. Support all serial protocols on both PPM and spektrum (not on this version)
+# ports. PPM protocol also supported on the PPM port
+# PI5 TIM8_CH1 TIM8 RCININT PULLDOWN LOW
+
+# setup for spektrum satellite bind
+define HAL_GPIO_SPEKTRUM_RC 74
+PH2 SPEKTRUM_PWR OUTPUT HIGH GPIO(73)
+define HAL_GPIO_SPEKTRUM_PWR 73
+define HAL_SPEKTRUM_PWR_ENABLED 1
+
+# setup for RCIN on USUART6, will auto-baud for 100000 and 115200 and
+# auto-switch inversion as needed
+define DEFAULT_SERIAL6_PROTOCOL 23
+define DEFAULT_SERIAL6_BAUD 115200
+
+# UART7 Telem 1, TELEM_UART_4W (checked against pin diagram and chip pin assignments)
+PF6 UART7_RX UART7
+PE8 UART7_TX UART7
+PF8 UART7_RTS UART7
+PE10 UART7_CTS UART7
+
+# PWM AUX channels (order is likely wrong, and I don't know what the GPIO(xx) is for...)
+PH6  TIM12_CH1 TIM12 PWM(1)
+PH9  TIM12_CH2 TIM12 PWM(2)
+PH10 TIM5_CH1  TIM5  PWM(3)
+PH11 TIM5_CH2  TIM5  PWM(4)
+PD13 TIM4_CH2  TIM4  PWM(5)
+PD14 TIM4_CH3  TIM4  PWM(6)
+PH12 TIM5_CH3  TIM5  PWM(7)
+PI0  TIM5_CH4  TIM5  PWM(8)
+
+# PWM output for buzzer
+#PE5 TIM9_CH1 TIM9 GPIO(77) ALARM
+
+define HAL_USE_ADC FALSE
+define HAL_DISABLE_ADC_DRIVER TRUE
+
+# INA231 battery monitor (no idea if this is right)
+define HAL_BATTMON_INA2XX_BUS 1
+define HAL_BATTMON_INA2XX_ADDR 0
+define HAL_BATT_MONITOR_DEFAULT 21
+
+# on some units a LTC2946 is used
+define HAL_BATTMON_LTC2946_BUS 1
+define HAL_BATTMON_LTC2946_ADDR 0x6a
+
+PB1 VDD_5V_SENS ADC1 SCALE(2) # ADC pin 10 (I'll need to build a check these) TODO
+#PC3 SCALED_V3V3 ADC3 SCALE(2) # TODO: get this to work
+PH3 BATT_VOLTAGE_SENS ADC3 SCALE(1) # again, need to check this one
+PH4 USB_SENSE ADC3 SCALE(1) # need to check this
+
+define ANALOG_VCC_5V_PIN 10 # ???
+
+# CAN bus
+PD0 CAN1_RX CAN1
+PD1 CAN1_TX CAN1
+#PI11 GPIO_CAN1_SILENT OUTPUT PUSHPULL SPEED_LOW LOW # ??
+#PD15 GPIO_CAN1_SILENT OUPUT PUSHPULL SPEED_LOW LOW # maybe...
+#PHI11 GPIO_CAN1_SILENT OUTPUT PUSHPULL SPEED_LOW LOW GPIO(70)
+
+# SPI devices (don't know about the DIVID, or the speed)
+SPIDEV icm42688       SPI1 DEVID1  ICM42688_A_CS  MODE3  2*MHZ  8*MHZ
+SPIDEV icm42688       SPI2 DEVID2  ICM42688_B_CS  MODE3  2*MHZ  8*MHZ
+SPIDEV ramtron        SPI5 DEVID1  FRAM_CS        MODE3  8*MHZ  8*MHZ
+
+
+
+
+# two IMUs (how to address seperately?)
+IMU Invensensev3 SPI:icm42688 ROTATION_YAW_180
+IMU Invensensev4 SPI:icm42688 ROTATION_YAW_180
+
+define HAL_DEFAULT_INS_FAST_SAMPLE 3
+
+# baros
+BARO BMP388 I2C:0:0x76
+BARO ICP201XX I2C:0:0x63
+
+# microSD support on SDMMC2
+PB14  SDMMC2_D0 SDMMC2
+PB15 SDMMC2_D1 SDMMC2
+PG11 SDMMC2_D2 SDMMC2
+PB4  SDMMC2_D3 SDMMC2
+PD6  SDMMC2_CK SDMMC2
+PD7  SDMMC2_CMD SDMMC2
+
+define FATFS_HAL_DEVICE SDCD2
+define HAL_OS_FATFS_IO 1
+
+# RGB LED
+PE3 LED_RED OUTPUT OPENDRAIN GPIO(93) # Still don't know about the GPIO() stuff
+PE4 LED_GREEN OUTPUT OPENDRAIN GPIO(94)
+PE5 LED_BLUE OUTPUT OPENDRAIN GPIO(95)
+
+# enable RAMTROM parameter storage
+define HAL_STORAGE_SIZE 32768
+define HAL_WITH_RAMTRON 1
+
+define HAL_PROBE_EXTERNAL_I2C_COMPASSES
+define HAL_COMPASS_AUTO_ROT_DEFAULT 2
+
+DMA_PRIORITY SDMMC* ADC* SPI* TIM* UART*
