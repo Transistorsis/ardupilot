@@ -2,7 +2,7 @@
 # for Modal AI FC v2
 
 # MCU class and specific type. It is an STM32H753
-MCU STM32H7xx STM32H743xx # chibios quirk
+MCU STM32H7xx STM32H743xx # STM32H753 and H743 are the same processor, but the 753 has a hardware encryption module
 
 
 # crystal frequency
@@ -22,7 +22,7 @@ FLASH_SIZE_KB 2048
 env OPTIMIZE -O2
 
 # order of UARTs (and USB)
-SERIAL_ORDER OTG1 UART7 UART5 USART1 UART4 USART2 USART6 USART3 OTG2
+SERIAL_ORDER OTG1 UART7 UART5 USART1 USART6 USART3
 
 # now we define the pins that USB is connected on (checked against pin diagram)
 PA11 OTG_FS_DM OTG1
@@ -182,14 +182,14 @@ PF8 UART7_RTS UART7
 PE10 UART7_CTS UART7
 
 # PWM AUX channels (order is likely wrong, and I don't know what the GPIO(xx) is for...)
-PH6  TIM12_CH1 TIM12 PWM(1)
-PH9  TIM12_CH2 TIM12 PWM(2)
-PH10 TIM5_CH1  TIM5  PWM(3)
-PH11 TIM5_CH2  TIM5  PWM(4)
-PD13 TIM4_CH2  TIM4  PWM(5)
-PD14 TIM4_CH3  TIM4  PWM(6)
-PH12 TIM5_CH3  TIM5  PWM(7)
-PI0  TIM5_CH4  TIM5  PWM(8)
+#PH6  TIM12_CH1 TIM12 PWM(1)
+#PH9  TIM12_CH2 TIM12 PWM(2)
+#PH10 TIM5_CH1  TIM5  PWM(3)
+#PH11 TIM5_CH2  TIM5  PWM(4)
+#PD13 TIM4_CH2  TIM4  PWM(5)
+#PD14 TIM4_CH3  TIM4  PWM(6)
+#PH12 TIM5_CH3  TIM5  PWM(7)
+#PI0  TIM5_CH4  TIM5  PWM(8)
 
 # PWM output for buzzer
 #PE5 TIM9_CH1 TIM9 GPIO(77) ALARM
@@ -211,7 +211,7 @@ PB1 VDD_5V_SENS ADC1 SCALE(2) # ADC pin 10 (I'll need to build a check these) TO
 PH3 BATT_VOLTAGE_SENS ADC3 SCALE(1) # again, need to check this one
 PH4 USB_SENSE ADC3 SCALE(1) # need to check this
 
-define ANALOG_VCC_5V_PIN 10 # ???
+#define ANALOG_VCC_5V_PIN 10 # ???
 
 # CAN bus
 PD0 CAN1_RX CAN1
@@ -230,7 +230,7 @@ SPIDEV ramtron        SPI5 DEVID1  FRAM_CS        MODE3  8*MHZ  8*MHZ
 
 # two IMUs (how to address seperately?)
 IMU Invensensev3 SPI:icm42688 ROTATION_YAW_180
-IMU Invensensev4 SPI:icm42688 ROTATION_YAW_180
+IMU Invensensev3 SPI:icm42688 ROTATION_YAW_180
 
 define HAL_DEFAULT_INS_FAST_SAMPLE 3
 

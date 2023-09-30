@@ -3,7 +3,7 @@
 # there are no other boards that I can base this off of, so I'll be making stuff up again...
 
 # MCU class and specific type
-MCU STM32H7xx STM32H743xx # chibios quirk
+MCU STM32H7xx STM32H743xx
 
 # crystal frequency
 OSCILLATOR_HZ 16000000
