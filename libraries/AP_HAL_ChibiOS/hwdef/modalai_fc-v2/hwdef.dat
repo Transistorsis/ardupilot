@@ -17,7 +17,9 @@ STM32_ST_USE_TIMER 2
 # default to all pins low to avoid ESD issues
 DEFAULTGPIO OUTPUT LOW PULLDOWN
 
-FLASH_RESERVE_START_KB 32
+# reserve first sector for bootloader
+#FLASH_RESERVE_START_KB 32
+FLASH_RESERVE_START_KB 128
 
 # flash size
 FLASH_SIZE_KB 2048
@@ -168,7 +170,7 @@ PC6 USART6_TX USART6
 
 # RC input. Support all serial protocols on both PPM and spektrum (not on this version)
 # ports. PPM protocol also supported on the PPM port
-# PI5 TIM8_CH1 TIM8 RCININT PULLDOWN LOW
+PI5 TIM8_CH1 TIM8 RCININT PULLDOWN LOW
 
 # setup for spektrum satellite bind
 define HAL_GPIO_SPEKTRUM_RC 74
