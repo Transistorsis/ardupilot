@@ -187,15 +187,16 @@ PE8 UART7_TX UART7
 PF8 UART7_RTS UART7
 PE10 UART7_CTS UART7
 
-# PWM AUX channels (order is likely wrong, and I don't know what the GPIO(xx) is for...)
-PH6  TIM12_CH1 TIM12 PWM(1) NODMA # for whatever reason ChibiOS doesn't like using timer 12 with dma (all the other boards that use ch12 have this setup)
-PH9  TIM12_CH2 TIM12 PWM(2) NODMA
-PH10 TIM5_CH1  TIM5  PWM(3)
-PH11 TIM5_CH2  TIM5  PWM(4)
+# PWM AUX channels
+# for whatever reason ChibiOS doesn't like using timer 12 with dma (all the other boards that use ch12 have this setup)
+PI0  TIM5_CH4  TIM5  PWM(1)
+PH12 TIM5_CH3  TIM5  PWM(2)
+PH11 TIM5_CH2  TIM5  PWM(3)
+PH10 TIM5_CH1  TIM5  PWM(4)
 PD13 TIM4_CH2  TIM4  PWM(5)
 PD14 TIM4_CH3  TIM4  PWM(6)
-PH12 TIM5_CH3  TIM5  PWM(7)
-PI0  TIM5_CH4  TIM5  PWM(8)
+PH6  TIM12_CH1 TIM12 PWM(7) NODMA
+PH9  TIM12_CH2 TIM12 PWM(8) NODMA
 
 # PWM output for buzzer
 #PE5 TIM9_CH1 TIM9 GPIO(77) ALARM
